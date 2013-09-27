@@ -1,6 +1,6 @@
 # docker-postgresql
 #
-# VERSION 0.1
+# VERSION 0.2
 
 FROM centos
 MAINTAINER Dave Goehrig dave@dloh.org
@@ -20,21 +20,14 @@ RUN yum install -y postgresql93-server postgresql93-contrib
 # initialize DB data files
 RUN su - postgres -c '/usr/pgsql-9.3/bin/initdb -D /var/lib/pgsql/data'
 
-# create a script to setup a nonpriv user, db
-RUN echo "su - postgres -c '/usr/pgsql-9.3/bin/postgres -D /var/lib/pgsql/data' &" > setup.sh
-RUN echo "su - postgres -c '/usr/pgsql-9.3/bin/createuser -d -r -s -P docker'" >> setup.sh
-RUN echo "su - postgres -c '/usr/pgsql-9.3/bin/createdb -O docker docker'" >> setup.sh
-RUN chmod u+x setup.sh
-
-# set permissions to allow logins
-RUN echo "host    all             all             0.0.0.0/0            md5" >> /var/lib/pgsql/data/pg_hba.conf
+# set permissions to allow logins, trust the bridge, this is the default for docker YMMV
+RUN echo "host    all             all             172.17.42.1/32            trust" >> /var/lib/pgsql/data/pg_hba.conf
 
 #listen on all interfaces
 RUN echo "listen_addresses='*'" >> /var/lib/pgsql/data/postgresql.conf
 
-# start the datbase
-CMD su - postgres -c '/usr/pgsql-9.3/bin/postgres -D /var/lib/pgsql/data'
-
-# open the port
+#expose 5432
 EXPOSE 5432
 
+# start the datbase
+CMD su - postgres -c '/usr/pgsql-9.3/bin/postgres -D /var/lib/pgsql/data' 
