@@ -26,4 +26,4 @@ To run the container you can do the following:
 Be default it is configured to trust any user on the default bridge interface (172.17.42.1) you may need to 
 change this should that conflict with another bridge on your network.
 
-
+NB: you will need to alter the pg_hba.conf file to support additional users
