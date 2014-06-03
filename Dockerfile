@@ -29,5 +29,5 @@ RUN echo "listen_addresses='*'" >> /var/lib/pgsql/data/postgresql.conf
 #expose 5432
 EXPOSE 5432
 
-# start the datbase
+# start the database
 CMD su - postgres -c '/usr/pgsql-9.3/bin/postgres -D /var/lib/pgsql/data' 
